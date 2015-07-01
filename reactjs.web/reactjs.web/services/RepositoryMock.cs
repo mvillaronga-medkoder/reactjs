@@ -215,6 +215,7 @@ namespace reactjs.web.services
                     if (!_tables.ContainsKey(classType) || _tables[classType].Count() == 0)
                     {
                         pi.SetValue(obj, 1);
+                        ret = 1;
                     }
                     else
                     {

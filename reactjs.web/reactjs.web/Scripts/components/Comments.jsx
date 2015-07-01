@@ -38,15 +38,22 @@
   }
 });
 
-/* Comment List Area */
-var CommentsList = React.createClass({
+    /******************************************************************************
+     *  Comment List Area 
+     *****************************************************************************/
+    var CommentsList = React.createClass({
 
-  render: function() {
-    var commentNodes = this.props.commentList.map(function (comment) {
-      return (
-        <CommentsListItem commentText={comment.commentText} author={comment.author} createdDate={comment.createdDate} />
-      );
-    });
+        render: function() {
+            var commentNodes = this.props.commentList.map(function (comment) {
+          return (
+            <CommentsListItem commentText={comment.commentText} 
+                              author={comment.author} 
+                              createdDate={comment.createdDate} 
+                              onCommentDelete={this.props.onCommentDelete}
+                              id={comment.id} 
+                              />
+          );
+        }.bind(this));
 
     return (
       <div className="list-group">
@@ -56,18 +63,28 @@ var CommentsList = React.createClass({
   }
 });
 
-/* Comment List Item */
-var CommentsListItem = React.createClass({
-  render: function() {
+/******************************************************************************
+ *  Comment List Item 
+ *****************************************************************************/
+    var CommentsListItem = React.createClass({
+
+    handleDelete: function(e) {
+        e.preventDefault();
+        //send the request to the parent to be sent to the server
+        this.props.onCommentDelete(this.props.id);
+    }, 
+
+    render: function() {
+        //console.log(this.props);
     return (
-                    <a href="#" className="list-group-item">
+                    <a href="#" className="list-group-item" data-id={this.props.id}>
                         <div className="row">
                             <div className="col-xs-8">
                                 <div className="comment-list-item-text">{this.props.commentText}</div>
                             </div>
                             <div className="col-xs-4">
                                 <div className="row">
-                                    <button className="btn btn-primary" role="button">Delete</button>
+                                    <button className="btn btn-primary" role="button" onClick={this.handleDelete}>Delete</button>
                                 </div>
                                 <div className="row">
                                     <div>{this.props.author}</div>
@@ -82,61 +99,82 @@ var CommentsListItem = React.createClass({
   }
 });
 
-    /* Top level Comment container class */
-    var Comments = React.createClass({
-        /* Setup initial state */
-        getInitialState: function () {
-            return {commentListItems: []};
-        },
+/******************************************************************************
+*  Top level comment container class
+*****************************************************************************/
+var Comments = React.createClass({
+    /* Setup initial state */
+    getInitialState: function () {
+        return {commentListItems: []};
+    },
 
-        /* handles the submit of the comment at the top level of the control */
-        handleCommentSubmit: function(comment) {
-            // TODO: submit to the server and refresh the list
-            console.log(comment);
-            console.log(comment.text);
+    /* handles the submit of the comment at the top level of the control */
+    handleCommentSubmit: function(comment) {
+        //console.log(comment);
+        //console.log(comment.text);
 
-            $.ajax({
-                url: '/Components/Comment/Add',
-                dataType: 'json',
-                type: 'POST',
-                data: {text: comment.text},
-                success: function(data) {
-                    this.setState({commentListItems: data});
-                }.bind(this),
-                error: function(xhr, status, err) {
-                    console.error(this.props.url, status, err.toString());
-                }.bind(this)
-            });
-        },
+        $.ajax({
+            url: '/Components/Comment/Add',
+            dataType: 'json',
+            type: 'POST',
+            data: {text: comment.text},
+            success: function(data) {
+                //console.log(data);
+                //console.log(data[0]);
+                this.setState({commentListItems: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
 
-        /* Loads the new state of the comments from the server */
-        loadCommentsFromServer: function() {
-            $.ajax({
-                url: '/Components/Comment/List', //Controller that loads the comments
-                dataType: 'json',
-                cache: false,
-                success: function(data) {
-                    console.log(data);
-                    console.log(data[0]);
-                    this.setState({commentListItems: data});
-                }.bind(this),
-                error: function(xhr, status, err) {
-                    console.error(this.props.url, status, err.toString());
-                }.bind(this)
-            });
-        },
+    /* handle the deletion of a comment */
+    handleCommentDelete: function(id) {
+        //console.log(comment);
 
-        /* the ON load function */
-        componentDidMount: function() {
-            this.loadCommentsFromServer();
-        },
+        $.ajax({
+            url: '/Components/Comment/Delete',
+            dataType: 'json',
+            type: 'POST',
+            data: {id: id},
+            success: function(data) {
+                this.setState({commentListItems: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
 
-        /* Display the comment box listing */
-        render: function() {
-            return (
-                <div>
-                    <CommentsEntry onCommentSubmit={this.handleCommentSubmit} />
-                    <CommentsList commentList={this.state.commentListItems} />
-                </div>
-        );}
-    });
+    /* Loads the new state of the comments from the server */
+    loadCommentsFromServer: function() {
+        $.ajax({
+            url: '/Components/Comment/List', //Controller that loads the comments
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+                //console.log(data);
+                //console.log(data[0]);
+                this.setState({commentListItems: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+
+    /* the ON load function */
+    componentDidMount: function() {
+        this.loadCommentsFromServer();
+    },
+
+    /* Display the comment box listing */
+    render: function() {
+        return (
+            <div>
+                <CommentsEntry onCommentSubmit={this.handleCommentSubmit} />
+                <CommentsList commentList={this.state.commentListItems} onCommentDelete={this.handleCommentDelete}/>
+            </div>
+    );}
+});
