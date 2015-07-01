@@ -56,15 +56,10 @@
     <script type="text/jsx" src="~/Scripts/components/Panel.jsx"></script>
     <script type="text/jsx" src="~/Scripts/components/Comments.jsx"></script>
     <script type="text/jsx">
-        var commentList = [
-            {commentText:'Text here', author:'Villaronga, Michael',createdDate:'6/28/2015'},
-            {commentText:'O cant belive I sauid that ', author:'Villaronga, Michael',createdDate:'6/29/2015'},
-            {commentText:'Look at tmore text', author:'Villaronga, Michael',createdDate:'6/30/2015'}
-        ];
 
         React.render(
             <DisplayPanel display="Comments">
-                <Comments commentList={commentList} />
+                <Comments />
             </DisplayPanel>,
             document.getElementById('viewport')
         );
