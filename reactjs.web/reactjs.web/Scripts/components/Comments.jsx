@@ -1,10 +1,15 @@
 ﻿
 /* Comment Entry area */
     var CommentsEntry = React.createClass({
-        handleAdd: function(e) {
+    getInitialState: function () {
+        return {usedChars: 0};
+    },
 
+  /* handles the add button being clicked */
+  handleAdd: function(e) {
         //retrieve the submitted values
         e.preventDefault();
+
         var text = React.findDOMNode(this.refs.comment).value.trim();
         if (!text) {
             return;
@@ -15,19 +20,27 @@
 
         //clear it 
         React.findDOMNode(this.refs.comment).value = '';
+        this.state.usedChars = 0;
         return;
     },
 
+  handleTextChange: function(e) {
+      this.setState({usedChars: React.findDOMNode(this.refs.comment).value.trim().length});
+  },
+    
   render: function() {
+
+      var availible = this.props.MaxCommentSize - this.state.usedChars;
+
     return (
             <div className="comment-entry row">
                 <div className="col-xs-12">
-                    <textarea maxlength="400" className="comment-text-area" ref="comment"></textarea>
+                    <textarea maxLength={this.props.MaxCommentSize} className="comment-text-area" ref="comment" onChange={this.handleTextChange}></textarea>
                 </div>
                 <div className="col-xs-12">
                     <div className="row">
                         <div className="col-xs-8"></div>
-                        <div className="col-xs-2">400 remaining</div>
+                        <div className="col-xs-2">{availible} remaining</div>
                         <div className="col-xs-2">
                             <button className="btn btn-primary" role="button" onClick={this.handleAdd}>Add Comment</button>
                         </div>
@@ -49,11 +62,12 @@
             <CommentsListItem commentText={comment.commentText} 
                               author={comment.author} 
                               createdDate={comment.createdDate} 
-                              onCommentDelete={this.props.onCommentDelete}
-                              id={comment.id} 
+                              onCommentDelete={this.props.onCommentDelete.bind(null, comment.id)} 
+                              key={comment.id} 
                               />
-          );
-        }.bind(this));
+          );//Note the bind and the key.  Bind is the proper way to bind an event for passing an value to and event within a map.  
+                //Key needed by all maps to be kept track of in the virtual dom when it gets changed
+        }.bind(this)); //this bind needed to handle binding the event and passing it properly with the map, otherwise the scope of this is off.
 
     return (
       <div className="list-group">
@@ -71,13 +85,14 @@
     handleDelete: function(e) {
         e.preventDefault();
         //send the request to the parent to be sent to the server
-        this.props.onCommentDelete(this.props.id);
+        console.log(e);
+        this.props.onCommentDelete(e);
     }, 
 
     render: function() {
         //console.log(this.props);
     return (
-                    <a href="#" className="list-group-item" data-id={this.props.id}>
+                    <a href="#" className="list-group-item">
                         <div className="row">
                             <div className="col-xs-8">
                                 <div className="comment-list-item-text">{this.props.commentText}</div>
@@ -173,7 +188,7 @@ var Comments = React.createClass({
     render: function() {
         return (
             <div>
-                <CommentsEntry onCommentSubmit={this.handleCommentSubmit} />
+                <CommentsEntry onCommentSubmit={this.handleCommentSubmit} MaxCommentSize={this.props.MaxCommentSize} />
                 <CommentsList commentList={this.state.commentListItems} onCommentDelete={this.handleCommentDelete}/>
             </div>
     );}
