@@ -105,6 +105,8 @@
     <Content Include="Areas\Components\CommentList.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Scripts\components\ContractsCombo.jsx" />
+    <Content Include="Areas\Components\Views\ContractCombo\Index.cshtml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <None Include="Scripts\components\Comments.jsx" />
     <Content Include="Scripts\jquery-2.1.4.js" />
@@ -122,8 +124,11 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Components\ComponentsAreaRegistration.cs" />
     <Compile Include="Areas\Components\Controllers\CommentController.cs" />
+    <Compile Include="Areas\Components\Controllers\ContractComboController.cs" />
     <Compile Include="Areas\Components\Models\CommentModel.cs" />
+    <Compile Include="Areas\Components\Models\ContractListItemModel.cs" />
     <Compile Include="domain\Comment.cs" />
+    <Compile Include="domain\Contract.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
