@@ -1,0 +1,52 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.js"></script>
+
+    <script src="~/Scripts/react/JSXTransformer-0.13.1.js"></script>
+    <script src="~/Scripts/react/react-0.13.1.js"></script>
+
+    <link href="~/Content/Comments.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="viewport">
+    </div>
+
+    <script type="text/jsx" src="~/Scripts/components/Panel.jsx"></script>
+    <script type="text/jsx" src="~/Scripts/components/ContractsCombo.jsx"></script>
+    <script type="text/jsx">
+        React.render(
+        <DisplayPanel display="Contract Combo Box Sample">
+
+            <ContractsCombobox />
+
+        </DisplayPanel>,
+        document.getElementById('viewport')
+        );
+    </script>
+
+    @*<div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            ORC 215 <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a href="#">ORC 215</a></li>
+            <li><a href="#">ORC 115</a></li>
+            <li><a href="#">Ochsner Ram 2014</a></li>
+        </ul>
+    </div>*@
+
+
+
+</body>
+</html>
